@@ -1,9 +1,9 @@
 defmodule Neuron do
-	def run do
-		receive do
-			{:add, subset} -> IO.inspect(subset)
-			{:read, msg} -> IO.inspect(msg)
-		end
-		run()
+	use Agent
+
+	def start_link(id) do
+		Agent.start_link(fn -> MapSet.new() end, name: id)
 	end
+
 end
+

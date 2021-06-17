@@ -51,6 +51,7 @@ Added to pooler 21
 ```
 
 #### Verify that the pooler has been updated
+The subset could vary because it is a random set.
 
 ```elixir
 iex(5)> GenServer.call(pid, :get_state)                            
@@ -62,7 +63,7 @@ iex(5)> GenServer.call(pid, :get_state)
    :"17", :"18", :"19", :"2", :"20", :"21", :"3", :"4", :"5", :"6", :"7", :"8",
    :"9"]>,
   prev: #MapSet<[]>,
-  subset: #MapSet<[:"10", :"11", :"16", :"5", :"7"]>
+  subset: #MapSet<[:"12", :"17", :"4", :"7", :"9"]>
 }
 ```
 #### Create another SDR
@@ -88,14 +89,6 @@ Added to pooler 34
 ...
 ...
 Added to pooler 35
-
-#MapSet<[:"38", :"40", :"45", :"47", :"51"]>
-#MapSet<[:"38", :"40", :"45", :"47", :"51"]>
-#MapSet<[:"38", :"40", :"45", :"47", :"51"]>
-#MapSet<[:"38", :"40", :"45", :"47", :"51"]>
-...
-...
-#MapSet<[:"38", :"40", :"45", :"47", :"51"]>
 ```
 
 #### Verify that the pooler has been updated
@@ -114,19 +107,18 @@ iex(8)> GenServer.call(pid, :get_state)
   prev: #MapSet<[:"0", :"1", :"10", :"11", :"12", :"13", :"14", :"15", :"16",
    :"17", :"18", :"19", :"2", :"20", :"21", :"3", :"4", :"5", :"6", :"7", :"8",
    :"9"]>,
-  subset: #MapSet<[:"38", :"40", :"45", :"47", :"51"]>
+  subset: #MapSet<[:"30", :"34", :"36", :"37", :"41"]>
 }
 ```
 
-#### Verify connectivity to the neurons
+#### Verify that the neurons are updated with the subset
 
 ```elixir
 iex(9)> pd = String.to_atom("#{21}")
 :"21"
 
-iex(10)> send pd, {:read, "Hello World"}
-"Hello World"
-{:read, "Hello World"}
+iex(10)> Agent.get(pd, fn state -> state end)
+#MapSet<[:"30", :"34", :"36", :"37", :"41"]>
 
 ```
 

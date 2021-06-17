@@ -19,17 +19,16 @@ defmodule Pooler do
 	def handle_cast({:send, sdr}, state) do
 		MapSet.difference(sdr, state.pool)
 		|> MapSet.to_list()
-		|> Enum.map(fn x -> 
-			pid = spawn(Neuron, :run, [])
+		|> Enum.map(fn x ->
   			id = String.to_atom("#{x}")
-			Process.register(pid, id)
+			{:ok, _pid} = Neuron.start_link(id)
 			IO.puts("Added to pooler #{id}")
 		end)
 		subset = Enum.take_random(sdr, 5) |> MapSet.new()
 		state.curr
 		|> MapSet.to_list()
-		|> Enum.map(fn x -> 
-			send x, {:add, subset}
+		|> Enum.map(fn x ->
+			Agent.cast(x, fn state -> MapSet.union(state, subset) end)
 		end)
 		pool = MapSet.union(state.pool, sdr)
 		{:noreply, %{state | pool: pool, curr: sdr, prev: state.curr, subset: subset}}
